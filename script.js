@@ -84,7 +84,7 @@ const hashMap = function() {
                 currentNode = currentNode.next;
             }
 
-            return false
+            return false;
         }
 
     }
@@ -99,11 +99,14 @@ const hashMap = function() {
                 if(currentNode.key === key && previousNode !== null) {
                     previousNode.next = currentNode.next;
                 } else if(currentNode.key === key && previousNode === null) {
-                    previousNode = currentNode.next;
+                    buckets[hashCode] = currentNode.next;
+                    numberOfKeys--;
+                    return true;
                 }
                 previousNode = currentNode;
                 currentNode = currentNode.next;
             }
+            numberOfKeys--;
             return true;
         } else {
             return false;
@@ -115,15 +118,40 @@ const hashMap = function() {
     }
     //clear(): removes all entries in the hash map
     const clear = function() {
-
+        buckets = new Array(16).fill(null);
+        numberOfKeys = 0;
     }
     //keys(): returns an array containing all the keys in the hash map
     const keys = function() {
-
+        let keyArray = [];
+        for(let i = 0; i < buckets.length; i++) {
+            if(buckets[i] !== null) {
+                //if there is a value in the bucket
+               /* if(buckets[i].next === null) {
+                    keyArray.push(buckets[i].key);
+                }*/
+                let currentNode = buckets[i];
+                while(currentNode !== null) {
+                    keyArray.push(currentNode.key);
+                    currentNode = currentNode.next;
+                }
+            }
+        }
+        return keyArray;
     }
     //values(): returns an array containing all the values
     const values = function() {
-
+        let valueArray = [];
+        for(let i = o; i < buckets.length; i++) {
+            if(buckets[i] !== null) {
+                let currentNode = buckets[i];
+                while(currentNode !== null) {
+                    valueArray.push(currentNode.value);
+                    currentNode = currentNode.next;
+                }
+            }
+        }
+        return valueArray;
     }
     //entries(): returns an array of each key value pair
     const entries = function() {
