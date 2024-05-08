@@ -5,8 +5,9 @@ const hashNode = function(key = null, value = null, next = null) {
 //Create HashMap factory function with the following methods:
 const hashMap = function() {
 
+    const LOAD_FACTOR = 0.75;
     let buckets = new Array(16).fill(null);
-    //const LOAD_FACTOR = 0.75;
+    let capacity = buckets.length;
     let numberOfKeys = 0;
 
     //hash(key): takes a key and produces a hash code with it, for this project, only accept strings
@@ -15,15 +16,35 @@ const hashMap = function() {
 
         const primeNumber = 31;
         for( let i = 0; i < key.length; i++) {
-            hashCode = (primeNumber * hashCode + key.charCodeAt(i)) % 16;
+            hashCode = (primeNumber * hashCode + key.charCodeAt(i)) % capacity;
         }
 
         return hashCode;
     }
+
+    const resize = function() {
+        let previousMap = buckets;
+        capacity *= 2;
+        buckets = new Array(capacity).fill(null);
+        numberOfKeys = 0;
+
+        previousMap.forEach((bucket) => {
+            let currentBucket = bucket;
+            while(currentBucket !== null) {
+                set(currentBucket.key, currentBucket.value);
+                currentBucket = currentBucket.next;
+            }
+        })
+    }
+
     //set(key, value): store the provided value with the given key on the hashmap. If the key already exists, adjust the value. Handles collision and bucket growth
     const set = function(key, value) {
         let hashCode = hash(key);
 
+
+        if(length() / capacity >= LOAD_FACTOR) {
+            resize();
+        }
         if(!has(key)) {
             let newNode = hashNode(key, value);
             //if this key does not already exist in our map
@@ -162,7 +183,7 @@ const hashMap = function() {
         console.log(buckets);
     }
 
-    return { hash, set, get, has, remove, length, clear, keys, values, entries, getBuckets }
+    return { hash, set, get, has, remove, length, clear, keys, values, entries, getBuckets, resize }
 };
 
 const myHash = hashMap();
