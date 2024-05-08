@@ -70,7 +70,6 @@ const hashMap = function() {
     }
     //has(key): takes a key as an argument and returns whether or not the key is in the hash map
     const has = function(key) {
-
         let hashCode = hash(key);
 
         if(buckets[hashCode] === null) {
@@ -79,10 +78,10 @@ const hashMap = function() {
             let currentNode = buckets[hashCode];
             if(currentNode.next === null && currentNode.key === key) return true;
             while(currentNode.next !== null) {
-                currentNode = currentNode.next;
                 if(currentNode.key === key) {
                     return true;
                 }
+                currentNode = currentNode.next;
             }
 
             return false
@@ -91,11 +90,28 @@ const hashMap = function() {
     }
     //remove(key): takes a key as an argument. if the key exists in the hash map, it removes that entry and returns true, otherwise it returns false
     const remove = function(key) {
+        let hashCode = hash(key);
 
+        if(has(key)) {
+            let currentNode = buckets[hashCode];
+            let previousNode = null;
+            while(currentNode !== null) {
+                if(currentNode.key === key && previousNode !== null) {
+                    previousNode.next = currentNode.next;
+                } else if(currentNode.key === key && previousNode === null) {
+                    previousNode = currentNode.next;
+                }
+                previousNode = currentNode;
+                currentNode = currentNode.next;
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
     //length(): returns the number of stored keys in the hash map
     const length = function() {
-
+        return numberOfKeys;
     }
     //clear(): removes all entries in the hash map
     const clear = function() {
