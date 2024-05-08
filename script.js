@@ -176,7 +176,15 @@ const hashMap = function() {
     }
     //entries(): returns an array of each key value pair
     const entries = function() {
-
+        let entriesArray = [];
+        buckets.forEach((bucket) => {
+            let currentBucket = bucket;
+            while( currentBucket !== null) {
+                entriesArray.push([currentBucket.key, currentBucket.value]);
+                currentBucket = currentBucket.next;
+            }
+        })
+        return entriesArray;
     }
 
     const getBuckets = function() {
